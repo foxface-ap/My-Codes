@@ -1,45 +1,43 @@
 #include <bits/stdc++.h>
+
 using namespace std;
+
+char c[201][201];
 
 int main()
 {
-    while(1)
-    {
-        int n;
-        cin>>n;
-        if(n==0)
-            break;
-        string str;
-        cin>>str;
-        int c = str.size()/n;
-        char mat[202][202];
-        int count = 0;
-        for(int i=1; i<=c; i++)
-        {
-            if(i%2==1)
-            {
-                for(int j=0; j<n; j++)
-                {
-                    mat[i][j+1] = str[count];
-                    count++;
-                }
-            }
-            if(i%2==0)
-            {
-                for(int j=n-1; j>=0; j--)
-                {
-                    mat[i][j+1] = str[count];
-                    count++;
-                }
-            }
-        }
-        for(int i=1; i<=n; i++)
-        {
-            for(int j=1; j<=c; j++)
-            {
-                cout<<mat[j][i];
-            }
-        }
-        cout<<endl;
-    }
+	int n;
+	cin >> n;
+
+	while(n != 0)
+	{
+		string s,s1;
+		cin >> s;
+
+		int r = s.size()/n;
+		int k = 0;
+
+		for(int i=0;i<r;i++)
+		{
+			for(int j=0;j<n;j++)
+			{
+				if(i%2 == 0)
+					c[i][j] = s[k++];
+				else
+					c[i][n-j-1] = s[k++];
+			}
+		}
+
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<r;j++)
+			{
+				s1.push_back(c[j][i]);
+			}
+		}
+
+		cout << s1 << endl;
+
+		cin >> n;
+	}
 }

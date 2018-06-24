@@ -1,93 +1,119 @@
 #include <bits/stdc++.h>
-using namespace std;
 
 #define ll long long
 
-ll tree[4000008];
-ll lazy[4000008];
-ll arr[1000002];
+using namespace std;
 
-void updateRange(ll node, ll start, ll end, ll l, ll r, ll val)
+ll int segtree[4000010],lazy[4000010],a[1000010];
+
+void build(int nd, int st, int ed)
 {
-    if(lazy[node] != 0)
-    { 
-        tree[node] += (end - start + 1) * lazy[node];
-        if(start != end)
-        {
-            lazy[node*2] += lazy[node];
-            lazy[node*2+1] += lazy[node];
-        }
-        lazy[node] = 0;
-    }
-    if(start > end or start > r or end < l)
-        return;
-    if(start >= l and end <= r)
+    if(st == ed)
     {
-        tree[node] += (end - start + 1) * val;
-        if(start != end)
-        {
-            lazy[node*2] += val;
-            lazy[node*2+1] += val;
-        }
+        segtree[nd] = a[st];
+        lazy[nd] = 0;
         return;
     }
-    ll mid = (start + end) / 2;
-    updateRange(node*2, start, mid, l, r, val);
-    updateRange(node*2 + 1, mid + 1, end, l, r, val);
-    tree[node] = tree[node*2] + tree[node*2+1];
+
+    int mid = (st+ed)/2;
+
+    build(2*nd,st,mid);
+    build(2*nd+1,mid+1,ed);
+
+    segtree[nd] = segtree[2*nd]+segtree[2*nd+1];
+    lazy[nd] = 0;
 }
 
-ll queryRange(ll node, ll start, ll end, ll l, ll r)
+void update(int nd, int st, int ed, int l, int r,ll int val,ll int lz)
 {
-    if(start > end or start > r or end < l)
-        return 0;
-    if(lazy[node] != 0)
+    int mid = (st+ed)/2;
+
+    if(l > ed || r < st)
     {
-        tree[node] += (end - start + 1) * lazy[node];
-        if(start != end)
-        {
-            lazy[node*2] += lazy[node];
-            lazy[node*2+1] += lazy[node];
-        }
-        lazy[node] = 0;
+        segtree[nd] += (ed-st+1)*lz;
+        lazy[nd] += lz;
+        return;
     }
-    if(start >= l and end <= r)
-        return tree[node];
-    ll mid = (start + end) / 2;
-    ll p1 = queryRange(node*2, start, mid, l, r);
-    ll p2 = queryRange(node*2 + 1, mid + 1, end, l, r);
-    return (p1 + p2);
+
+    if(st >= l && ed <= r)
+    {
+        segtree[nd] += (ed-st+1)*(lz+val);
+        lazy[nd] += (lz+val);
+        return;
+    }
+
+    update(2*nd,st,mid,l,r,val,lz+lazy[nd]);
+    update(2*nd+1,mid+1,ed,l,r,val,lz+lazy[nd]);
+
+    segtree[nd] = segtree[2*nd]+segtree[2*nd+1];
+    lazy[nd] = 0;
+}
+
+ll int quary(int nd, int st, int ed, int l, int r,ll int lz)
+{
+    int mid = (st+ed)/2;
+
+    if(l > ed || r < st)
+    {
+        segtree[nd] += (ed-st+1)*lz;
+        lazy[nd] += lz;
+        return 0;
+    }
+
+    if(st >= l && ed <= r)
+    {
+        segtree[nd] += (ed-st+1)*lz;
+        lazy[nd] += lz;
+        return segtree[nd];
+    }
+
+    ll int q1,q2;
+
+    q1 = quary(2*nd,st,mid,l,r,lz+lazy[nd]);
+    q2 = quary(2*nd+1,mid+1,ed,l,r,lz+lazy[nd]);
+
+    segtree[nd] = segtree[2*nd]+segtree[2*nd+1];
+    lazy[nd] = 0;
+
+    return q1+q2;
 }
 
 int main()
 {
-    ll t;
-    scanf("%lld",&t);
+    int t;
+    cin >> t;
+
     while(t--)
     {
-        ll n;
-        scanf("%lld",&n);
-        ll c;
-        scanf("%lld",&c);
-        memset(arr,0,sizeof(arr));
-        memset(lazy,0,sizeof(lazy));
-        memset(tree,0,sizeof(tree));
+        int n,c;
+        cin >> n >> c;
+
+        for(int i=0;i<n;i++)
+            a[i] = 0;
+
+        for(int i=0;i<4*n;i++)
+            segtree[i] = lazy[i] = 0;
+        
         while(c--)
         {
-            ll ty, u, v;
-            scanf("%lld%lld%lld",&ty,&u,&v);
-            if(ty==0)
+            int type;
+            cin >> type;
+
+            if(type == 0)
             {
-                ll val;
-                scanf("%lld",&val);
-                updateRange(1,1,n,u,v,val);
+                int p,q;
+                ll int v;
+                cin >> p >> q >> v;
+
+                update(1,0,n-1,p-1,q-1,v,lazy[0]);
             }
-            if(ty==1)
+            else
             {
-                ll ans = queryRange(1,1,n,u,v);
-                printf("%lld\n",ans);
+                int p,q;
+                cin >> p >> q;
+
+                cout << quary(1,0,n-1,p-1,q-1,lazy[0]) << endl;
             }
         }
     }
-    return 0;
 }

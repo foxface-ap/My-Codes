@@ -1,89 +1,92 @@
 #include <bits/stdc++.h>
+
 using namespace std;
+
+bool prime[10010];
+bool mark[10010];
+int dis[10010];
+
+void bfs(int sr)
+{
+    queue <int> q;
+
+    int l = 0;
+
+    q.push(sr);
+    mark[sr] = false;
+    dis[sr] = l;
+
+    while(!q.empty())
+    {
+        int node = q.front(),a[4];
+        q.pop();
+
+        int num = node;
+
+        for(int i=3;i>=0;i--)
+        {
+            a[i] = num%10;
+            num /= 10;
+        }
+
+        for(int i=0;i<4;i++)
+        {
+            for(int j=1;j<10;j++)
+            {
+                a[i] = (a[i] + j)%10;
+
+                num = 0;
+
+                for(int k=0;k<4;k++)
+                    num = num*10 + a[k];
+
+                if(prime[num] && num > 1000 && mark[num])
+                {
+                    q.push(num);
+                    mark[num] = false;
+                    
+                    dis[num] = dis[node]+1;
+                }
+
+                a[i] = (a[i] + 10 - j)%10;
+            }
+        }
+    }
+}
 
 int main()
 {
-    int seive[10002] = {0};
-    for(int i=2; i<=10001; i++)
+    for(int i=0;i<10010;i++)
+        prime[i] = true;
+
+    for(int i=2;i<10010;i++)
     {
-        if(seive[i]==0)
+        if(prime[i])
         {
-            for(int j=2*i; j<10002; j=j+i)
-            {
-                seive[j] = 1;
-            }
+            for(int j = 2*i;j<10010;j+=i)
+                prime[j] = false;
         }
     }
+
     int t;
-    cin>>t;
+    cin >> t;
+
     while(t--)
     {
-        int mark[10002];
-        memset(mark,0,sizeof(mark));
-        int n, m;
-        cin>>n>>m;
-        queue<pair<int,int>> q;
-        q.push(make_pair(n,0));
-        int count = 0;
-        if(seive[m]==0)
+        int n,m;
+        cin >> n >> m;
+
+        for(int i=0;i<10010;i++)
         {
-            while(q.size()!=0)
-            {
-                int p = q.front().first;
-                if(p==m)
-                {
-                    cout<<q.front().second<<endl;
-                    break;
-                }
-                int d = p%10;
-                int c = (p/10)%10;
-                int b = (p/100)%10;
-                int a = (p/1000);
-                for(int i=0; i<=9; i++)
-                {
-                    int f = a*1000+b*100+c*10+i;
-                    if(seive[f]==0 and mark[f]==0)
-                    {
-                        q.push(make_pair(f,q.front().second+1));
-                        mark[f] = 1;
-                    }
-                }
-                for(int i=0; i<=9; i++)
-                {
-                    int f = a*1000+b*100+i*10+d;
-                    if(seive[f]==0 and mark[f]==0)
-                    {
-                        q.push(make_pair(f,q.front().second+1));
-                        mark[f] = 1;
-                    }
-                }
-                for(int i=0; i<=9; i++)
-                {
-                    int f = a*1000+i*100+c*10+d;
-                    if(seive[f]==0 and mark[f]==0)
-                    {
-                        q.push(make_pair(f,q.front().second+1));
-                        mark[f] = 1;
-                    }
-                }
-                for(int i=1; i<=9; i++)
-                {
-                    int f = i*1000+b*100+c*10+d;
-                    if(seive[f]==0 and mark[f]==0)
-                    {
-                        q.push(make_pair(f,q.front().second+1));
-                        mark[f] = 1;
-                    }
-                }
-                q.pop();
-            }
+            mark[i] = true;
+            dis[i] = 100000000;
         }
+
+        bfs(n);
+
+        if(dis[m] == 100000000)
+            cout << "Impossible" << endl;
         else
-        {
-            cout<<"Impossible"<<endl;
-        }
-        while(q.size()!=0)
-            q.pop();
+            cout << dis[m] << endl;
     }
-    return 0;
 }

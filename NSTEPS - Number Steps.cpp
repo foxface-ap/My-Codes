@@ -1,29 +1,25 @@
-#include <stdio.h>
+#include <bits/stdc++.h>
+
+using namespace std;
 
 int main()
 {
-    int t;
-    scanf("%d",&t);
-    while(t--)
-    {
-        int u , v;
-        scanf("%d%d",&u,&v);
-        if(u==v || (u-v)==2)
-        {
-            int a = u+v;
-            if(u%2==0 && v%2==0)
-            {
-                printf("%d\n",a);
-            }
-            else
-            {
-                printf("%d\n",a-1);
-            }
-        }
-        else
-        {
-            printf("No Number\n");
-        }
-    }
-    return 0;
+	int t;
+	cin >> t;
+	while(t--)
+	{
+		int x,y;
+		cin >> x >> y;
+
+		if(x == y && x%2 == 0)
+			cout << x+y << endl;
+		else if(x == y)
+			cout << x+y-1 << endl;
+		else if(x == y+2 && y%2 == 0)
+			cout << x+y << endl;
+		else if(x == y+2)
+			cout << x+y-1 << endl;
+		else
+			cout << "No Number" << endl;
+	}
 }

@@ -1,20 +1,21 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <bits/stdc++.h>
+
 namespace mp = boost::multiprecision;
+
+#define BINT mp::cpp_int
 using namespace std;
 
 int main()
 {
-    int t = 10;
-    while(t--)
-    {
-        mp::cpp_int u, v, x, y;
-        cin>>u>>v;
-        u = u - v;
-        u = u/2;
-        x = u;
-        y = u + v;
-        cout<<y<<endl;
-        cout<<x<<endl;
-    }
+	int t = 10;
+
+	while(t--)
+	{
+		BINT a,b;
+		cin >> a >> b;
+
+		cout << (a+b)/2 << endl;
+		cout << (a-b)/2 << endl;
+	}
 }
