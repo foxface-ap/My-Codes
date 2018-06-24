@@ -1,32 +1,88 @@
-#include <stdio.h>
+#include <bits/stdc++.h>
 
-int main(void)
-{
-    int t;
-    scanf("%d",&t);
-    while(t--)
-    {
-        int a , b ;
-        scanf("%d%d",&a,&b);
-        int c , d ;
-        c = rev(a);
-        d = rev(b);
-        int ans , ans_rev;
-        ans = c + d;
-        ans_rev = rev(ans);
-        printf("%d\n",ans_rev);
-    }
-    return 0;
-}
+using namespace std;
 
-int rev(int n)
+int main()
 {
-    int i , j=0 ;
-    while(n>0)
-    {
-        i = n % 10;
-        j = j*10 + i;
-        n = n / 10;
-    }
-    return j;
+	int t;
+	cin >> t;
+
+	while(t--)
+	{
+		string s1,s2;
+		cin >> s1 >> s2;
+
+		queue <int> p1,p2,p;
+
+		int i=0;
+
+		while(s1[i] != '\0')
+		{
+			p1.push(s1[i] - 48);
+			i++;
+		}
+
+		i = 0;
+
+		while(s2[i] != '\0')
+		{
+			p2.push(s2[i] - 48);
+			i++;
+		}
+
+		i = 0;
+
+		while(!p1.empty() && !p2.empty())
+		{
+			i += p1.front() + p2.front();
+
+			p.push(i%10);
+
+			i /= 10;
+
+			p1.pop();
+			p2.pop();
+		}
+
+		while(!p1.empty())
+		{
+			i += p1.front();
+
+			p.push(i%10);
+
+			i /= 10;
+
+			p1.pop();
+		}
+
+		while(!p2.empty())
+		{
+			i += p2.front();
+
+			p.push(i%10);
+
+			i /= 10;
+
+			p2.pop();
+		}
+
+		if(i != 0)
+			p.push(i);
+
+		while(!p.empty())
+		{
+			if(p.front() != 0)
+				break;
+
+			p.pop();
+		}
+
+		while(!p.empty())
+		{
+			cout << p.front();
+
+			p.pop();
+		}
+		cout << endl;
+	}
 }

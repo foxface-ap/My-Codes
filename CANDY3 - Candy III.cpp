@@ -1,22 +1,30 @@
 #include <bits/stdc++.h>
+
+#define ll long long
+
 using namespace std;
 
 int main()
 {
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        long long int n, p,sum = 0;
-        cin>>n;
-        for(long long int i=1; i<=n; i++)
-        {
-            cin>>p;
-            sum = (sum%n + p%n)%n;
-        }
-        if(sum%n==0)
-            cout<<"YES\n";
-        else
-            cout<<"NO\n";
-    }
+	int t;
+	cin >> t;
+	
+	while(t--)
+	{
+		ll int count=0,n,x;
+		cin >> n;
+
+		for(int i=0;i<n;i++)
+		{
+			cin >> x;
+			count += x;
+
+			count %= n;
+		}
+
+		if(count%n == 0)
+			cout << "YES" << endl;
+		else
+			cout << "NO" << endl;
+	}
 }

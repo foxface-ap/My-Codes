@@ -14,8 +14,6 @@ int main()
 		ll int n;
 		cin >> n;
 
-		n--;
-
-		cout << 192 + 250*n << endl;
+		cout << (n*(3*n+1)/2)%1000007 << endl;
 	}
 }

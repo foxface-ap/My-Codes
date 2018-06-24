@@ -1,40 +1,41 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main()
 {
-    int c = 1;
-    while(1)
+    int k = 0;
+    string s;
+    cin >> s;
+
+    while(s[0] != '-')
     {
-        string str;
-        cin>>str;
-        int ans = 0;
-        if(str[0]=='-')
-            break;
-        int n = str.size();
-        stack<char> s;
-        for(int i=0; i<n; i++)
+        stack <char> s1;
+
+        int count = 0;
+
+        for(int i=0;i<s.size();i++)
         {
-            if(str[i]=='}')
+            if(s[i] == '{')
             {
-                if(s.size()==0)
+                s1.push('{');
+            }
+            else
+            {
+                if(s1.empty())
                 {
-                    ans++;
-                    s.push('{');
+                    count++;
+                    s1.push('{');
                 }
                 else
-                {
-                    s.pop();
-                }
-            }
-            if(str[i]=='{')
-            {
-                s.push('{');
+                    s1.pop();
             }
         }
-        ans = ans + (s.size())/2;
-        cout<<c<<". "<<ans<<endl;
-        c++;
+
+        count += s1.size()/2;
+
+        cout << ++k << ". " << count << endl;
+
+        cin >> s;
     }
-    return 0;
 }

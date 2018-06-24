@@ -1,41 +1,43 @@
 #include <bits/stdc++.h>
+
+#define pb push_back
+#define mk make_pair
+
 using namespace std;
-
-struct act
-{
-	int f,s;
-}arr[100000];
-
-bool comp(struct act a,struct act b)
-{
-	if (a.s == b.s)
-		return a.f<b.f;
-	return a.s<b.s;
-}
 
 int main()
 {
-    int t;
-    cin>>t;
+    int t,x,y;
+    cin >> t;
+
     while(t--)
     {
         int n;
-        cin>>n;
-        for(int i=0; i<n; i++)
+        cin >> n;
+
+        vector < pair<int,int> > v;
+
+        for(int i=0;i<n;i++)
         {
-            cin>>arr[i].f>>arr[i].s;
+            cin >> x >> y;
+            v.pb(mk(y,x));
         }
-        sort(arr,arr+n,comp);
-        int count = 0, end=-1;
-        for(int i=0; i<n; i++)
+
+        sort(v.begin(),v.end());
+
+        int count = 0,temp = -1;
+
+        for(int i=0;i<n;i++)
         {
-            if(arr[i].f>=end)
+            //cout << v[i].first << " " << v[i].second << endl;
+
+            if(v[i].second >= temp)
             {
                 count++;
-                end = arr[i].s;
+                temp = v[i].first;
             }
         }
-        cout<<count<<endl;
+
+        cout << count << endl;
     }
-    return 0;
 }

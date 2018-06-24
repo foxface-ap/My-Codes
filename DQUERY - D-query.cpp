@@ -1,79 +1,94 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int block;
+int current_answer,answers[200500],BLOCK_SIZE,arr[30500],mp[1000100];
 
-struct node{
-    int l;
-    int r;
-    int idx;
-};
+pair< pair<int, int>, int> queries[200500];
 
-bool compare(struct node x, struct node y) 
+inline bool mo_cmp(const pair< pair<int, int>, int> &x,
+        const pair< pair<int, int>, int> &y)
 {
-	if(x.l/block!=y.l/block) 
-	{
-		return x.l/block<y.l/block;
-	}
-	return x.r<y.r;
+    int block_x = x.first.first / BLOCK_SIZE;
+    int block_y = y.first.first / BLOCK_SIZE;
+    if(block_x != block_y)
+        return block_x < block_y;
+    return x.first.second < y.first.second;
+}
+
+inline void add(int x)
+{
+    if(mp[x] == 0)
+        current_answer++;
+    mp[x]++;
+}
+
+inline void remove(int x)
+{
+    if(mp[x] == 1)
+        current_answer--;
+    mp[x]--;
 }
 
 int main()
 {
-    int n,m;
-    scanf("%d",&n);
-    block = sqrt(n);
-    int arr[n];
-    for(int i=0; i<n; i++)
-        scanf("%d",&arr[i]);
-    scanf("%d",&m);
-    struct node qr[m];
-    int ans[m];
-    for(int i=0; i<m; i++)
+    cin.sync_with_stdio(false);
+
+    int N, Q;
+    cin >> N;
+
+    BLOCK_SIZE = static_cast<int>(sqrt(N));
+
+    for(int i = 0; i < N; i++)
+        cin >> arr[i];
+
+    cin >> Q;
+
+    int x,y;
+
+    for(int i = 0; i < Q; i++) 
     {
-        int x, y;
-        scanf("%d%d",&x,&y);
-        qr[i].l = x-1;
-        qr[i].r = y-1;
-        qr[i].idx = i;
+        cin >> x >> y;
+        queries[i].first.first = x-1;
+        queries[i].first.second = y-1;
+        queries[i].second = i;
     }
-    sort(qr,qr+m,compare);
-    int count[1000005] = {0};
-    int answer = 0;
-    int cl = 0, cr = 0;
-    for(int i=0; i<m; i++)
+
+    sort(queries, queries + Q, mo_cmp);
+
+    int mo_left = 0, mo_right = -1;
+
+    for(int i = 0; i < Q; i++) 
     {
-        int cll = qr[i].l, crr = qr[i].r, ii = qr[i].idx;
-        while(cl<cll)
+        int left = queries[i].first.first;
+        int right = queries[i].first.second;
+
+        while(mo_right < right) 
         {
-            count[arr[cl]]--;
-            if(count[arr[cl]]==0)
-                answer--;
-            cl++;
+            mo_right++;
+            add(arr[mo_right]);
         }
-        while(cl>cll)
+        while(mo_right > right) 
         {
-            count[arr[cl-1]]++;
-            if(count[arr[cl-1]]==1)
-                answer++;
-            cl--;
+            remove(arr[mo_right]);
+            mo_right--;
         }
-        while(cr<=crr)
+
+        while(mo_left < left) 
         {
-            count[arr[cr]]++;
-            if(count[arr[cr]]==1)
-                answer++;
-            cr++;
+            remove(arr[mo_left]);
+            mo_left++;
         }
-        while(cr>crr+1)
+        while(mo_left > left) 
         {
-            count[arr[cr-1]]--;
-            if(count[arr[cr-1]]==0)
-                answer--;
+            mo_left--;
+            add(arr[mo_left]);
         }
-        ans[ii] = answer;
+
+        answers[queries[i].second] = current_answer;
     }
-    for(int i=0; i<m; i++)
-        printf("%d\n",ans[i]);
+
+    for(int i = 0; i < Q; i++)
+        cout << answers[i] << "\n";
     return 0;
 }
